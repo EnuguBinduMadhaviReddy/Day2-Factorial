@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="4a521c7c-cdcd-4f5c-90bf-536f4102eb21" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<flow name="day-2Flow" doc:id="81decf1b-e95d-4d8b-8a03-7a6929f1b161" >
+		<http:listener doc:name="Listener" doc:id="6f178b4f-007e-4d6a-a1d7-835125ea8643" config-ref="HTTP_Listener_config" path="/factorial"/>
+		<ee:transform doc:name="Transform Message" doc:id="4049541a-265b-495a-b8bc-75ebfae948ef" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+fun fact(num) = if(num>1) num * fact(num-1)  else 1
+---
+fact(payload)]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="288a1742-dfda-4639-ac4c-c46c31b6b62a" message="Factorial Flow is completed"/>
+	</flow>
+</mule>
